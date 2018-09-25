@@ -31,7 +31,7 @@ exports[`App has a valid snapshot 1`] = `
     className="interactions"
   >
     <button
-      className={undefined}
+      className=""
       onClick={[Function]}
       type="button"
     >
@@ -43,8 +43,8 @@ exports[`App has a valid snapshot 1`] = `
 
 exports[`Button has a valid snapshot 1`] = `
 <button
-  className={undefined}
-  onClick={undefined}
+  className=""
+  onClick={[Function]}
   type="button"
 >
   Give Me More
@@ -53,12 +53,12 @@ exports[`Button has a valid snapshot 1`] = `
 
 exports[`Search has a valid snapshot 1`] = `
 <form
-  onSubmit={undefined}
+  onSubmit={[Function]}
 >
   Search
    
   <input
-    onChange={undefined}
+    onChange={[Function]}
     type="text"
     value={undefined}
   />
