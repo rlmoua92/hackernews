@@ -76,18 +76,16 @@ describe('Table', () => {
       { title: '1', author: '1', num_comments: 1, points: 2, objectID: 'y' },
       { title: '2', author: '2', num_comments: 1, points: 2, objectID: 'z' },
     ],
-    sortKey: 'TITLE',
-    isSortReverse: false,
   }
 
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />, div);
+    ReactDOM.render(<Table {...props} onDismiss={() => console.log("Dismiss")} />, div);
   });
 
   it('shows two items in list', () => {
     const element = shallow(
-      <Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />
+      <Table {...props} onDismiss={() => console.log("Dismiss")} />
     );
 
     expect(element.find('.table-row').length).toBe(2);
@@ -95,7 +93,7 @@ describe('Table', () => {
 
   test('has a valid snapshot', () => {
     const component = renderer.create(
-      <Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />
+      <Table {...props} onDismiss={() => console.log("Dismiss")} />
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
