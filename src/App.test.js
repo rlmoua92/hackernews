@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import App, { Search, Button, Table } from './App';
+import App, { Search, Button, Table, Sort } from './App';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -75,17 +75,19 @@ describe('Table', () => {
     list: [
       { title: '1', author: '1', num_comments: 1, points: 2, objectID: 'y' },
       { title: '2', author: '2', num_comments: 1, points: 2, objectID: 'z' },
-    ]
+    ],
+    sortKey: 'TITLE',
+    isSortReverse: false,
   }
 
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Table {...props} onDismiss={() => console.log("Dismiss")} />, div);
+    ReactDOM.render(<Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />, div);
   });
 
   it('shows two items in list', () => {
     const element = shallow(
-      <Table {...props} onDismiss={() => console.log("Dismiss")} />
+      <Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />
     );
 
     expect(element.find('.table-row').length).toBe(2);
@@ -93,10 +95,32 @@ describe('Table', () => {
 
   test('has a valid snapshot', () => {
     const component = renderer.create(
-      <Table {...props} onDismiss={() => console.log("Dismiss")} />
+      <Table {...props} onDismiss={() => console.log("Dismiss")} onSort={() => console.log("SORT")} />
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 
+});
+
+describe('Sort', () => {
+  const props = {
+    sortKey: 'TITLE',
+    activeSortKey: 'TITLE',
+    isSortReverse: false,
+  }
+
+  it('renders without crashing', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(<Sort {...props} onSort={() => console.log("SORT BY TITLE")}>Title</Sort>, div);
+    ReactDOM.unmountComponentAtNode(div);
+  });
+
+  test('has a valid snapshot', () => {
+    const component = renderer.create(
+      <Sort {...props} onSort={() => console.log("SORT BY TITLE")}>Title</Sort>
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
