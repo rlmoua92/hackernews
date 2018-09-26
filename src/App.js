@@ -151,13 +151,12 @@ class App extends Component {
           />
         }
         <div className="interactions">
-          { isLoading
-            ? <Loading />
-            : <Button 
-                onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+          { <ButtonWithLoading
+              isLoading={isLoading}
+              onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
               >
               More
-            </Button>
+            </ButtonWithLoading>
           }
         </div>
       </div>
@@ -290,6 +289,16 @@ const Loading = () => {
     <div><i className="fas fa-spinner"></i></div>
   );
 };
+
+const withLoading = (Component) => ({ isLoading, ...rest }) => {
+  return (
+    isLoading
+      ? <Loading />
+      : <Component { ...rest } />
+  );
+};
+
+const ButtonWithLoading = withLoading(Button);
 
 export default App;
 
