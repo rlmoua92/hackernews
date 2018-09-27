@@ -39,10 +39,21 @@ class Table extends Component {
 
   onSort(sortKey) {
     this.setState(prevState => {
-      const isSortReverse = prevState.sortKey === sortKey && !prevState.isSortReverse;
+      let isSortReverse = prevState.sortKey === sortKey && !prevState.isSortReverse;
+      if (prevState.sortKey === sortKey && prevState.sortKey !== 'NONE') {
+        switch(prevState.isSortReverse) {
+          case true:
+            sortKey = 'NONE';
+            isSortReverse = false;
+            break;
+          case false:
+            isSortReverse = true;
+            break;
+        }
+      }
       return {
         sortKey,
-        isSortReverse
+        isSortReverse,
       };
     });
   }
