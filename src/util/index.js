@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const updateSearchTopStoriesState = (hits, page) => (prevState) => {
+const updateSearchTopStoriesState = (hits, page, nbPages) => (prevState) => {
   const { searchKey, results } = prevState;
 
   const oldHits = results && results[searchKey]
@@ -16,7 +16,7 @@ const updateSearchTopStoriesState = (hits, page) => (prevState) => {
   return {
     results: {
       ...results,
-      [searchKey]: { hits: updatedHits, page }
+      [searchKey]: { hits: updatedHits, page, nbPages }
     },
     isLoading: false
   };
@@ -50,9 +50,35 @@ const withLoading = (Component) => ({ isLoading, ...rest }) => {
   );
 };
 
+const withInfiniteScroll = (Component) => {
+  return (class WithInfiniteScroll extends Component {
+    componentDidMount() {
+      window.addEventListener('scroll', this.onScroll, false);
+    }
+  
+    componentWillUnmount() {
+      window.removeEventListener('scroll', this.onScroll, false);
+    }
+  
+    onScroll = () => {
+      if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500)
+        && this.props.list.length
+        && !this.props.isLoading
+      ) {
+        this.props.onPaginatedSearch();
+      }
+    }
+  
+    render() {
+      return <Component {...this.props} />;
+    }
+  });
+};
+
 export {
   updateSearchTopStoriesState,
   dismissSearchResult,
   Loading,
   withLoading,
+  withInfiniteScroll,
 };

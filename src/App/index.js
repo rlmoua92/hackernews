@@ -5,7 +5,7 @@ import './index.css';
 import Button from '../Button/index.js'
 import Search from '../Search/index.js'
 import Table from '../Table/index.js'
-import { dismissSearchResult, updateSearchTopStoriesState, withLoading } from '../util/index.js';
+import { dismissSearchResult, updateSearchTopStoriesState, withLoading, withInfiniteScroll } from '../util/index.js';
 
 const DEFAULT_QUERY = 'redux';
 const DEFAULT_HPP = '100';
@@ -17,6 +17,7 @@ const PARAM_PAGE = 'page=';
 const PARAM_HPP = 'hitsPerPage=';
 
 const ButtonWithLoading = withLoading(Button);
+const TableWithInfiniteScroll = withInfiniteScroll(Table);
 
 class App extends Component {
   _isMounted = false;
@@ -45,17 +46,21 @@ class App extends Component {
   }
 
   setSearchTopStories(result) {
-    const { hits, page } = result;
-
-    this.setState(updateSearchTopStoriesState(hits, page));
+    const { hits, page, nbPages } = result;
+    console.log(nbPages);
+    this.setState(updateSearchTopStoriesState(hits, page, nbPages));
   }
 
   fetchSearchTopStories(searchTerm, page=0) {
-    this.setState({ isLoading: true });
-
-    axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-      .then(result => this._isMounted && this.setSearchTopStories(result.data))
-      .catch(error => this._isMounted && this.setState({ error }));
+    const { results } = this.state;
+    console.log(this.state)
+    if (!results || (results[searchTerm] && results[searchTerm].page < results[searchTerm].nbPages - 1) || !results[searchTerm]) {
+      this.setState({ isLoading: true });
+  
+      axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
+        .then(result => this._isMounted && this.setSearchTopStories(result.data))
+        .catch(error => this._isMounted && this.setState({ error }));
+    }
   }
 
   componentDidMount() {
@@ -132,9 +137,11 @@ class App extends Component {
           ? <div className="interactions">
             <p>Something went wrong.</p>
           </div>
-          : <Table 
+          : <TableWithInfiniteScroll
             list={list}
             onDismiss={this.onDismiss}
+            isLoading={isLoading}
+            onPaginatedSearch={() => this.fetchSearchTopStories(searchKey, page + 1)}
           />
         }
         <div className="interactions">
