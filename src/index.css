@@ -40,6 +40,11 @@ button:hover {
     color: #222;
 }
 
+
 *:focus {
     outline: none;
+}
+
+.page {
+    margin: 20px;
 }
