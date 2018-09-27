@@ -254,7 +254,7 @@ class Table extends Component {
 
   onSort(sortKey) {
     this.setState(prevState => {
-      const isSortReverse = prevState.state.sortKey === sortKey && !prevState.state.isSortReverse;
+      const isSortReverse = prevState.sortKey === sortKey && !prevState.isSortReverse;
       return {
         sortKey,
         isSortReverse
